@@ -9,10 +9,12 @@ import dev.boxadactle.coordinatesdisplay.CoordinatesDisplay;
 import dev.boxadactle.coordinatesdisplay.ModUtil;
 import dev.boxadactle.coordinatesdisplay.hud.HudRenderer;
 import dev.boxadactle.coordinatesdisplay.position.Position;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.text.DecimalFormat;
+import java.util.Optional;
 
 public class MinRenderer extends HudRenderer {
 
@@ -20,8 +22,8 @@ public class MinRenderer extends HudRenderer {
         super("hud.coordinatesdisplay.min.");
     }
 
-    private int calculateWidth(int p, int th, int dpadding, Component xtext, Component ytext, Component ztext, Component biome) {
-        int a = GuiUtils.getLongestLength(xtext, ytext, ztext, biome);
+    private int calculateWidth(int p, int th, int dpadding, Component xtext, Component ytext, Component ztext, Component cCounter, Component biome) {
+        int a = GuiUtils.getLongestLength(xtext, ytext, ztext, biome, cCounter);
         int b = GuiUtils.getTextRenderer().width("NW");
 
         return p + a + dpadding + b + p;
@@ -91,13 +93,15 @@ public class MinRenderer extends HudRenderer {
         Component directionComponent = Component.translatable("hud.coordinatesdisplay.min." + ModUtil.getDirectionFromYaw(yaw), direction);
         Component yawComponent = Component.literal(yaw > 0 ? "+" : "-");
 
-        Component cCounter = GuiUtils.colorize(
-                Component.literal("C: x/x"),
-                config().dataColor
-        );
+        Component cCounter = GuiUtils.colorize(translation(
+                "c",
+                GuiUtils.colorize(
+                        Component.literal(ModUtil.getCCounterString()),
+                        config().dataColor)
+        ), config().definitionColor);
 
         // int w = Math.max(101,calculateWidth(p, th, tp, xtext, ytext, ztext, biome));
-        int w = calculateWidth(p, th, tp, xtext, ytext, ztext, biome);
+        int w = calculateWidth(p, th, tp, xtext, ytext, ztext, cCounter, biome);
         int h = calculateHeight(p, th);
 
         // rendering
